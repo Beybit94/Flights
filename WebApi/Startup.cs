@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Business.Manager;
 using Business.Mappers;
 using Data;
 using Data.Entity.Identity;
@@ -32,7 +33,7 @@ namespace WebApi
         {
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Data")));
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationContext>();
-            services.AddControllers();
+            services.AddScoped<ApplicationContext>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -43,8 +44,11 @@ namespace WebApi
             });
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<FlightManager>();
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

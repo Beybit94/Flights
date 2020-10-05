@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Business.Model
 {
-    public class Model
+    public abstract class Model
     {
         public long ID { get; set; }
 
