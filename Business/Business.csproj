@@ -5,9 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Manager\" />
-    <Folder Include="Mappers\" />
-    <Folder Include="Model\" />
     <Folder Include="Validation\" />
   </ItemGroup>
 

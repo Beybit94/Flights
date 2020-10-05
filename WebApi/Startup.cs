@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Business.Mappers;
 using Data;
 using Data.Entity.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,16 @@ namespace WebApi
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Data")));
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationContext>();
             services.AddControllers();
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AllowNullCollections = true;
+                mc.AllowNullDestinationValues = true;
+                mc.AddProfile<EntityToModelMappingProfile>();
+                mc.AddProfile<ModelToEntityMappingProfile>();
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddAutoMapper(typeof(Startup));
         }
