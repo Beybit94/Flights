@@ -9,10 +9,11 @@ namespace Data.Configuration
 {
     public class UsersWithRolesConfig : IEntityTypeConfiguration<IdentityUserRole<string>>
     {
-        private const string adminUserId = "B22698B8-42A2-4115-9631-1C2D1E2AC5F7";
-        private const string adminRoleId = "2301D884-221A-4E7D-B509-0113DCC043E1";
-        private const string managerUserId = "78A7570F-3CE5-48BA-9461-80283ED1D94D";
-        private const string managerRoleId = "7D9B7113-A8F8-4035-99A7-A20DD400F6A3";
+        private string adminUserId = "b4e863c7-4b83-485d-9547-3ff6244e0653";
+        private string adminRoleId = "848a7716-143d-49e7-913a-1a7ee1d90d94";
+
+        private const string managerUserId = "7c8ce7a1-566e-48df-bada-96943846cf38";
+        private const string managerRoleId = "c8c37a8b-e246-4013-9085-795fb0e17919";
 
         public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
         {

@@ -22,11 +22,13 @@ namespace Data
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            //builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            builder.ApplyConfiguration(new RoleConfiguration());
-            builder.ApplyConfiguration(new AdminConfiguration());
-            builder.ApplyConfiguration(new UsersWithRolesConfig());
+            //builder.ApplyConfiguration(new AdminRoleConfig());
+            //builder.ApplyConfiguration(new ManagerRoleConfig());
+            //builder.ApplyConfiguration(new AdminUserConfig());
+            //builder.ApplyConfiguration(new ManagerUserConfig());
+            //builder.ApplyConfiguration(new UsersWithRolesConfig());
         }
 
         public DbSet<Customer> Customers { get; set; }
