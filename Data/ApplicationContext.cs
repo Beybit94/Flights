@@ -1,4 +1,5 @@
-﻿using Data.Entity.Identity;
+﻿using Data.Entity;
+using Data.Entity.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,9 +10,13 @@ namespace Data
 {
     public class ApplicationContext : IdentityDbContext<User>
     {
-        public ApplicationContext(DbContextOptions options) : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+            : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
+
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Flight> Flights { get; set; }
     }
 }
