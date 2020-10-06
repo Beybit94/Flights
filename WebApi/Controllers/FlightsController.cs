@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Business.Manager;
 using Business.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     [Route("api/Flights")]
     [ApiController]
     public class FlightsController : ControllerBase
@@ -21,12 +23,22 @@ namespace WebApi.Controllers
             _flightManager = flightManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        [ActionName("List")]
         [Route("List")]
-        public async Task<IEnumerable<FlightModel>> List()
+        public IActionResult List()
         {
-            return await _flightManager.ListAsync();
+            try
+            {
+                return Ok(new { success = true, data = _flightManager.List() });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { error = ex.Message, success = false });
+            }
+
         }
+
+
     }
 }

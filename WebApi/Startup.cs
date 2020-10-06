@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Business.Manager;
 using Business.Mappers;
 using Data;
 using Data.Entity.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -35,7 +38,7 @@ namespace WebApi
         {
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Data")));
             services.AddIdentity<User, Role>().AddEntityFrameworkStores<ApplicationContext>();
-            services.AddScoped<ApplicationContext>();
+            //services.AddDefaultIdentity<User>().AddEntityFrameworkStores<ApplicationContext>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -49,6 +52,21 @@ namespace WebApi
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<FlightManager>();
+            services.AddScoped<AccountManager>();
+            services.AddScoped<ApplicationContext>();
+
+            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddSwaggerGen(options =>
             {
@@ -56,6 +74,7 @@ namespace WebApi
             });
 
             services.AddControllers();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +85,7 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -73,7 +93,7 @@ namespace WebApi
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseSwagger(); 
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = "";

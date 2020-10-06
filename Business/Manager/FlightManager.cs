@@ -21,9 +21,9 @@ namespace Business.Manager
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<FlightModel>> ListAsync()
+        public IEnumerable<FlightModel> List()
         {
-            var entity = await _context.Flights.ToListAsync();
+            var entity = _context.Flights.ToList();
             return _mapper.Map<IEnumerable<FlightModel>>(entity);
         }
     }
