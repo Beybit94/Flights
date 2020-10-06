@@ -2,6 +2,7 @@
 using Business.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -20,9 +21,9 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("Authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> AuthenticateAsync(AuthenticateRequest model)
         {
-            var response = _accountManager.AuthenticateAsync(model);
+            var response = await _accountManager.AuthenticateAsync(model);
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });

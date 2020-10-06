@@ -9,19 +9,21 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
-    [Route("api/Flights")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
+    [Route("api/Admin")]
     [ApiController]
-    public class FlightsController : ControllerBase
+    public class AdminController : ControllerBase
     {
-        private readonly ILogger<FlightsController> _logger;
+        private readonly ILogger<AdminController> _logger;
         private readonly FlightManager _flightManager;
 
-        public FlightsController(ILogger<FlightsController> logger, FlightManager flightManager)
+        public AdminController(ILogger<AdminController> logger, FlightManager flightManager)
         {
             _logger = logger;
             _flightManager = flightManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("List")]
         public IActionResult List()
@@ -37,7 +39,6 @@ namespace WebApi.Controllers
 
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPost]
         [Route("Create")]
         public IActionResult Create(FlightModel model)
@@ -52,7 +53,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPost]
         [Route("Edit")]
         public IActionResult Edit(FlightModel model)
@@ -67,7 +67,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPost]
         [Route("Delete")]
         public IActionResult Delete(long Id)
@@ -76,21 +75,6 @@ namespace WebApi.Controllers
             {
                 _flightManager.Delete(Id);
                 return Ok(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new { error = ex.Message, success = false });
-            }
-        }
-
-        [Authorize(AuthenticationSchemes = "Bearer", Roles = "manager")]
-        [HttpPost]
-        [Route("Put")]
-        public IActionResult Put(FlightModel model)
-        {
-            try
-            {
-                return Ok(new { success = true, data = _flightManager.Put(model) });
             }
             catch (Exception ex)
             {

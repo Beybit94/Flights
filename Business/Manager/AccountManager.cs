@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Business.Manager
 {
-   public class AccountManager
+    public class AccountManager
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
@@ -36,23 +36,37 @@ namespace Business.Manager
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!result) return null;
 
-            var token = GenerateJwtToken(user);
-
+            var token = await GenerateJwtTokenAsync(user);
             return new AuthenticateResponse(user, token);
         }
 
-        private string GenerateJwtToken(User user)
+        private async Task<string> GenerateJwtTokenAsync(User user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings:Token").Value);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var claims = userRoles.Select(r => new Claim(ClaimTypes.Role, r)).ToList();
+                //var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+                claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+
+                var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings:Token").Value);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
+            catch(Exception ex)
+            {
+                throw (ex);
+            }
         }
     }
 }

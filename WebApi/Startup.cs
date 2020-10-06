@@ -72,8 +72,9 @@ namespace WebApi
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Flights", Version = "v1" });
             });
 
-            services.AddControllers();
             services.AddCors();
+            services.AddControllers()
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Data
 {
-    public class ApplicationContext : IdentityDbContext<User>
+    public class ApplicationContext : IdentityDbContext<User,Role,string>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
