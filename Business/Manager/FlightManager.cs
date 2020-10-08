@@ -24,7 +24,7 @@ namespace Business.Manager
 
         public IEnumerable<FlightModel> List()
         {
-            var entity = _context.Flights.ToList();
+            var entity = _context.Flights.Include("Customer").ToList();
             return _mapper.Map<IEnumerable<FlightModel>>(entity);
         }
 

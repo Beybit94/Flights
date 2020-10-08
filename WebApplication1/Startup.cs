@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Web
+namespace WebApplication1
 {
     public class Startup
     {
@@ -26,7 +26,7 @@ namespace Web
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/src";
+                configuration.RootPath = "ClientApp/build";
             });
         }
 
@@ -60,6 +60,7 @@ namespace Web
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
+
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");

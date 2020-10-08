@@ -84,7 +84,7 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseHttpsRedirection();
 
             app.UseRouting();
